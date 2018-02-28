@@ -1,8 +1,9 @@
 import numpy as np
 from scipy.signal import detrend
+from scipy.signal import convolve2d
 
 
-def find_peaks_ampd(x, scale=None, debug=False):
+def find_peaks_ampd_original(x, scale=None, debug=False):
     """Find peaks in quasi-periodic noisy signals using AMPD algorithm
     Automati Multi-Scale Peak Detection originally proposed in
     "An Efficient Algorithm for Automatic Peak Detection in
@@ -50,12 +51,9 @@ def find_peaks_ampd(x, scale=None, debug=False):
     return pks
 
 
-def find_peaks_ampd_v2(x, scale=None, debug=False):
+def find_peaks_ampd(x, scale=None, debug=False):
     """Find peaks in quasi-periodic noisy signals using AMPD algorithm
-    Automati Multi-Scale Peak Detection originally proposed in
-    "An Efficient Algorithm for Automatic Peak Detection in
-    Noisy Periodic and Quasi-Periodic Signals", Algorithms 2012, 5, 588-603
-    https://doi.org/10.1109/ICRERA.2016.7884365
+    Extended implementation handles peaks near start/end of the signal.
 
     Optimized implementation by Igor Gotlibovych, 2018
 
@@ -67,8 +65,8 @@ def find_peaks_ampd_v2(x, scale=None, debug=False):
     scale : int, optional
         specify maximum scale window size of (2 * scale + 1)
     debug : bool, optional
-        if set to True, the Local Scalogram Matrix, `LSM`, and scale with most local maxima, `l`,
-        are returned together with peak locations
+        if set to True, the Local Scalogram Matrix, `LSM`, weigted number of maxima, 'G',
+        and scale at which G is maximized, `l`, are returned together with peak locations
 
     Returns
     -------
@@ -97,4 +95,69 @@ def find_peaks_ampd_v2(x, scale=None, debug=False):
     pks = np.nonzero(pks_logical)
     if debug:
         return pks, LSM, G, l
+    return pks
+
+
+def find_peaks_ass_ampd(x, window=None, debug=False):
+    """Find peaks in quasi-periodic noisy signals using ASS-AMPD algorithm
+    Adaptive Scale Selection Automatic Multi-Scale Peak Detection, an extension of AMPD -
+    "An Efficient Algorithm for Automatic Peak Detection in
+    Noisy Periodic and Quasi-Periodic Signals", Algorithms 2012, 5, 588-603
+    https://doi.org/10.1109/ICRERA.2016.7884365
+
+    Optimized implementation by Igor Gotlibovych, 2018
+
+
+    Parameters
+    ----------
+    x : ndarray
+        1-D array on which to find peaks
+    window : int, optional
+        sliding window size for adaptive scale selection
+    debug : bool, optional
+        if set to True, the Local Scalogram Matrix, `LSM`, and `adaptive_scale`,
+        are returned together with peak locations
+
+    Returns
+    -------
+    pks: ndarray
+        The ordered array of peak indices found in `x`
+    """
+    x = detrend(x)
+    N = len(x)
+    if not window:
+        window = N
+    if window > N:
+        window = N
+    L = window // 2
+    
+    # create LSM matix
+    LSM = np.ones((L, N), dtype=bool)
+    for k in np.arange(1, L+1):
+        LSM[k-1, 0:N-k] &= (x[0:N-k] > x[k:N])  # compare to right neighbours
+        LSM[k-1, k:N] &= (x[k:N] > x[0:N-k])  # compare to left neighbours
+    
+    # Create continuos adaptive LSM
+    ## this running mean implementation is much faster then convolution
+    left_pad = L + 1
+    right_pad = window - L - 1
+    LSM_padded = np.pad(LSM, ((0, 0), (left_pad, right_pad)), mode='edge')
+    cumsum = np.cumsum(LSM_padded, axis=1)
+    ass_LSM = (cumsum[:, window:] - cumsum[:, :-window])
+    normalization = np.arange(L, 0, -1)  # scale normalization weight
+    ass_LSM = ass_LSM * normalization.reshape(-1, 1)
+    
+    # Find adaptive scale at each point
+    adaptive_scale = ass_LSM.argmax(axis=0)
+    
+    # construct reduced LSM
+    LSM_reduced = LSM[:adaptive_scale.max(), :]
+    mask = (np.indices(LSM_reduced.shape)[0] > adaptive_scale) # these elements are outside scale of interest
+    LSM_reduced[mask] = 1
+    
+    # find peaks that persist on all scales up to l
+    pks_logical = np.min(LSM_reduced, axis=0)
+    pks = np.nonzero(pks_logical)
+    if debug:
+        return pks, ass_LSM, adaptive_scale
     return pks
