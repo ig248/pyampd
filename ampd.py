@@ -1,11 +1,11 @@
 import numpy as np
 from scipy.signal import detrend
-from scipy.signal import convolve2d
+from scipy.ndimage import uniform_filter
 
 
 def find_peaks_ampd_original(x, scale=None, debug=False):
     """Find peaks in quasi-periodic noisy signals using AMPD algorithm
-    Automati Multi-Scale Peak Detection originally proposed in
+    Automatic Multi-Scale Peak Detection originally proposed in
     "An Efficient Algorithm for Automatic Peak Detection in
     Noisy Periodic and Quasi-Periodic Signals", Algorithms 2012, 5, 588-603
     https://doi.org/10.1109/ICRERA.2016.7884365
@@ -138,15 +138,10 @@ def find_peaks_ass_ampd(x, window=None, debug=False):
         LSM[k-1, k:N] &= (x[k:N] > x[0:N-k])  # compare to left neighbours
     
     # Create continuos adaptive LSM
-    ## this running mean implementation is much faster then convolution
-    left_pad = L + 1
-    right_pad = window - L - 1
-    LSM_padded = np.pad(LSM, ((0, 0), (left_pad, right_pad)), mode='edge')
-    cumsum = np.cumsum(LSM_padded, axis=1)
-    ass_LSM = (cumsum[:, window:] - cumsum[:, :-window])
+    ass_LSM = uniform_filter(LSM * window, size=(1, window), mode='nearest')
     normalization = np.arange(L, 0, -1)  # scale normalization weight
     ass_LSM = ass_LSM * normalization.reshape(-1, 1)
-    
+
     # Find adaptive scale at each point
     adaptive_scale = ass_LSM.argmax(axis=0)
     
