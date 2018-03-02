@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.signal import detrend
-from scipy.ndimage import uniform_filter
+from scipy.ndimage import uniform_filter1d
 
 
 def find_peaks_ampd_original(x, scale=None, debug=False):
@@ -138,7 +138,7 @@ def find_peaks_ass_ampd(x, window=None, debug=False):
         LSM[k-1, k:N] &= (x[k:N] > x[0:N-k])  # compare to left neighbours
     
     # Create continuos adaptive LSM
-    ass_LSM = uniform_filter(LSM * window, size=(1, window), mode='nearest')
+    ass_LSM = uniform_filter1d(LSM * window, window, axis=1, mode='nearest')
     normalization = np.arange(L, 0, -1)  # scale normalization weight
     ass_LSM = ass_LSM * normalization.reshape(-1, 1)
 
