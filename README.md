@@ -33,6 +33,13 @@ will select the optimal scale at each point using a 200-point running window.
 `find_peaks_ampd` is not identical to the algorithm proposed in the original paper (especially near start and end of time series).
  A performance-optimized version of the original implementation is provided in `find_peaks_ampd_original`.
 
+
+## Tests
+Run
+```bash
+pytest
+```
+
 ## Other implementations
 - R: https://cran.r-project.org/web/packages/ampd/index.html
 - MATLAB: https://github.com/mathouse/AMPD-algorithm
