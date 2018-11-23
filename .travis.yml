@@ -1,0 +1,20 @@
+sudo: false
+cache: pip
+language: python
+python:
+    - 3.6
+
+install: 
+  - make dev-install
+  - pip install codecov
+
+script:
+  - make lint
+  - make ci-test
+
+branches:
+  only:
+    - master
+
+after_success:
+  - codecov
