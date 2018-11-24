@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.com/ig248/pyampd.svg?branch=master)](https://travis-ci.com/ig248/pyampd)
+[![Coverage Status](https://codecov.io/gh/ig248/pyampd/branch/master/graph/badge.svg)](https://codecov.io/gh/ig248/pyampdgit)
+
 # AMPD algorithm in Python
 Implements a function `find_peaks_ampd` based on the Automatic Multi-scale
 Peak Detection algorithm proposed by Felix Scholkmann et al. in
