@@ -4,7 +4,8 @@ from scipy.signal import detrend
 
 
 def find_peaks_original(x, scale=None, debug=False):
-    """Find peaks in quasi-periodic noisy signals using AMPD algorithm
+    """Find peaks in quasi-periodic noisy signals using AMPD algorithm.
+
     Automatic Multi-Scale Peak Detection originally proposed in
     "An Efficient Algorithm for Automatic Peak Detection in
     Noisy Periodic and Quasi-Periodic Signals", Algorithms 2012, 5, 588-603
@@ -28,6 +29,7 @@ def find_peaks_original(x, scale=None, debug=False):
     -------
     pks: ndarray
         The ordered array of peak indices found in `x`
+
     """
     x = detrend(x)
     N = len(x)
@@ -43,18 +45,19 @@ def find_peaks_original(x, scale=None, debug=False):
 
     # Find scale with most maxima
     G = LSM.sum(axis=1)
-    l = np.argmax(G)
+    l_scale = np.argmax(G)
 
     # find peaks that persist on all scales up to l
-    pks_logical = np.min(LSM[0:l, :], axis=0)
+    pks_logical = np.min(LSM[0:l_scale, :], axis=0)
     pks = np.flatnonzero(pks_logical)
     if debug:
-        return pks, LSM, l
+        return pks, LSM, l_scale
     return pks
 
 
 def find_peaks(x, scale=None, debug=False):
-    """Find peaks in quasi-periodic noisy signals using AMPD algorithm
+    """Find peaks in quasi-periodic noisy signals using AMPD algorithm.
+
     Extended implementation handles peaks near start/end of the signal.
 
     Optimized implementation by Igor Gotlibovych, 2018
@@ -76,6 +79,7 @@ def find_peaks(x, scale=None, debug=False):
     -------
     pks: ndarray
         The ordered array of peak indices found in `x`
+
     """
     x = detrend(x)
     N = len(x)
@@ -95,18 +99,19 @@ def find_peaks(x, scale=None, debug=False):
     G = G * np.arange(
         N // 2, N // 2 - L, -1
     )  # normalize to adjust for new edge regions
-    l = np.argmax(G)
+    l_scale = np.argmax(G)
 
     # find peaks that persist on all scales up to l
-    pks_logical = np.min(LSM[0:l, :], axis=0)
+    pks_logical = np.min(LSM[0:l_scale, :], axis=0)
     pks = np.flatnonzero(pks_logical)
     if debug:
-        return pks, LSM, G, l
+        return pks, LSM, G, l_scale
     return pks
 
 
 def find_peaks_adaptive(x, window=None, debug=False):
-    """Find peaks in quasi-periodic noisy signals using ASS-AMPD algorithm
+    """Find peaks in quasi-periodic noisy signals using ASS-AMPD algorithm.
+
     Adaptive Scale Selection Automatic Multi-Scale Peak Detection,
     an extension of AMPD -
     "An Efficient Algorithm for Automatic Peak Detection in
@@ -131,6 +136,7 @@ def find_peaks_adaptive(x, window=None, debug=False):
     -------
     pks: ndarray
         The ordered array of peak indices found in `x`
+
     """
     x = detrend(x)
     N = len(x)
