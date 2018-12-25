@@ -5,23 +5,25 @@ import os
 
 from setuptools import find_packages, setup
 
-# allow setup.py to be run from any path
-os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
+install_requires = ['numpy', 'scipy']
 
-with open('requirements.txt') as f:
-    install_requires = f.read().splitlines()
-    install_requires = [i for i in install_requires if '://' not in i]
+VERSION = '0.0.1'
 
-VERSION = '0.0.0.DEV0'
+# read the contents of your README file
+this_directory = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(this_directory, 'README.md')) as f:
+    long_description = f.read()
 
 setup(
     name='pyampd',
     version=VERSION,
+    description='Peak detection using AMPD and ASS-AMPD algorithms',
+    url='https://github.com/ig248/kerashistoryplot',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     packages=find_packages(exclude=('tests', )),
     entry_points={'console_scripts': []},
     include_package_data=True,
-    zip_safe=False,
-    description='Peak detection using AMPD and ASS-AMPD algorithms',
     author='Igor Gotlibovych',
     author_email='igor.gotlibovych@gmail.com',
     license='MIT',
