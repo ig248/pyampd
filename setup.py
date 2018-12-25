@@ -18,7 +18,7 @@ setup(
     name='pyampd',
     version=VERSION,
     description='Peak detection using AMPD and ASS-AMPD algorithms',
-    url='https://github.com/ig248/kerashistoryplot',
+    url='https://github.com/ig248/pyampd',
     long_description=long_description,
     long_description_content_type='text/markdown',
     packages=find_packages(exclude=('tests', )),
