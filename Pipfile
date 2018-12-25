@@ -1,0 +1,24 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[requires]
+python_version = "3.6"
+
+[packages]
+pyampd = {editable = true, path = "."}
+
+[dev-packages]
+mccabe = '*'
+pep8-naming = '*'
+flake8 = '*'
+pydocstyle = '*'
+mypy = '*'
+typeshed = '*'
+yapf = '*'
+isort = '*'
+pytest = '*'
+pytest-cov = '*'
+pytest-benchmark = '*'
+glob2 = '*'

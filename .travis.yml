@@ -4,13 +4,14 @@ language: python
 python:
     - 3.6
 
-install: 
+install:
+  - pip install pipenv
   - make dev-install
   - pip install codecov
 
 script:
   - make lint
-  - make ci-test
+  - make test
 
 branches:
   only:

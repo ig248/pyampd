@@ -40,8 +40,9 @@ def find_peaks_original(x, scale=None, debug=False):
     # create LSM matix
     LSM = np.zeros((L, N), dtype=bool)
     for k in np.arange(1, L):
-        LSM[k - 1, k:N -
-            k] = (x[0:N - 2 * k] < x[k:N - k]) & (x[k:N - k] > x[2 * k:N])
+        LSM[k - 1, k:N - k] = (
+            (x[0:N - 2 * k] < x[k:N - k]) & (x[k:N - k] > x[2 * k:N])
+        )
 
     # Find scale with most maxima
     G = LSM.sum(axis=1)

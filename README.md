@@ -8,6 +8,7 @@ Peak Detection algorithm proposed by Felix Scholkmann et al. in
 Noisy Periodic and Quasi-Periodic Signals", Algorithms 2012,
  5, 588-603
 
+![Peak finding](https://raw.githubusercontent.com/ig248/pyampd/master/ass_ampd.png)
 ## Usage
 Install package from source:
 
@@ -32,7 +33,7 @@ will only consider windows up to +-100 point either side of peak candidates.
 
 ### Adaptive Scale Selection
 If the characteristic scale of the signal changes over time, a new algorithm called
-Adaptive Scale Selection can track the changes in optimal scales and detect peaks accorgingly:
+Adaptive Scale Selection can track the changes in optimal scales and detect peaks accordingly:
 ```python
 peaks = find_peaks_adaptive(x, window=200)
 ```
