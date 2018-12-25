@@ -21,3 +21,7 @@ test:
 
 test-cov:
 	pipenv run pytest --cov=. --cov-report html --cov-report term
+
+release:
+	python setup.py sdist bdist_wheel
+	twine upload dist/*

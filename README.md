@@ -9,8 +9,15 @@ Noisy Periodic and Quasi-Periodic Signals", Algorithms 2012,
  5, 588-603
 
 ![Peak finding](https://raw.githubusercontent.com/ig248/pyampd/master/ass_ampd.png)
+
 ## Usage
-Install package from source:
+Install from PyPI:
+
+```
+pip install pyampd
+```
+
+Or install from source:
 
 ```
 pip install git+https://github.com/ig248/pyampd
