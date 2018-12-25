@@ -1,3 +1,4 @@
+[![PyPI version](https://badge.fury.io/py/pyampd.svg)](https://badge.fury.io/py/pyampd)
 [![Build Status](https://travis-ci.com/ig248/pyampd.svg?branch=master)](https://travis-ci.com/ig248/pyampd)
 [![Coverage Status](https://codecov.io/gh/ig248/pyampd/branch/master/graph/badge.svg)](https://codecov.io/gh/ig248/pyampdgit)
 
